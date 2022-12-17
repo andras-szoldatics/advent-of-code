@@ -1,8 +1,6 @@
 // C++ standard includes
-#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
