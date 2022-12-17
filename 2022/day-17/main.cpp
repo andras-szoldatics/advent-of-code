@@ -226,95 +226,97 @@ int main() {
 
     // read input file
     ifstream input("input.txt");
-    while (getline(input, line)) {
-        // temporary storage
-        Rock shape = rocks.at(rockIndex++);
-        shape.lowestBlock = (tunnel.highestBlock + 4);
-        int64_t windIndex = 0;
 
-        // iterate over line's characters
-        while (rocksDropped < MAXIMUM_ROUNDS) {
-            // retrieve wind and step onto next
-            char wind = line.at(windIndex++);
-            windIndex %= line.size();
+    // read first & only relevant line
+    getline(input, line);
 
-            // follow the wind
-            if (wind == '>') {
-                if (!tunnel.isTouchingRight(shape)) {
-                    shape.moveRight(tunnel.blocks.size());
-                }
-            } else if (wind == '<') {
-                if (!tunnel.isTouchingLeft(shape)) {
-                    shape.moveLeft(tunnel.blocks.size());
-                }
+    // temporary storage
+    Rock shape = rocks.at(rockIndex++);
+    shape.lowestBlock = (tunnel.highestBlock + 4);
+    int64_t windIndex = 0;
+
+    // iterate over line's characters
+    while (rocksDropped < MAXIMUM_ROUNDS) {
+        // retrieve wind and step onto next
+        char wind = line.at(windIndex++);
+        windIndex %= line.size();
+
+        // follow the wind
+        if (wind == '>') {
+            if (!tunnel.isTouchingRight(shape)) {
+                shape.moveRight(tunnel.blocks.size());
+            }
+        } else if (wind == '<') {
+            if (!tunnel.isTouchingLeft(shape)) {
+                shape.moveLeft(tunnel.blocks.size());
+            }
+        }
+
+        // falling down step
+        if (!tunnel.isTouchingDown(shape)) {
+            // falling down
+            shape.moveDown();
+        } else {
+            // coming to rest
+            tunnel.addShape(shape);
+            rocksDropped++;
+
+            // select next shape
+            shape = rocks.at(rockIndex++);
+            shape.lowestBlock = (tunnel.highestBlock + 4);
+
+            // mod shape index to make it circular
+            rockIndex %= rocks.size();
+
+            // check for interlude rounds
+            if (rocksDropped == INTERLUDE_ROUNDS) {
+                // display highest block
+                cout << "after round #" << INTERLUDE_ROUNDS << ", highest block in tunnel : " << tunnel.highestBlock << endl;
+            }
+        }
+
+        // increase clock to keep a tally
+        clock++;
+
+        if (rocksDropped < INTERLUDE_ROUNDS) {
+            // skip looping before the interlude
+            continue;
+        }
+
+        // check for loops
+        if (clock % line.size() == 0) {
+            // assemble a hash string
+            stringstream buffer;
+
+            // assemble hash
+            buffer << shape.leftMostBlock << ":" << (shape.lowestBlock - tunnel.highestBlock) << ":" << rockIndex;
+            for (int64_t block : tunnel.blocks) {
+                buffer << ":" << (tunnel.highestBlock - block);
             }
 
-            // falling down step
-            if (!tunnel.isTouchingDown(shape)) {
-                // falling down
-                shape.moveDown();
+            string hash = buffer.str();
+            // check if this hash already exists
+            if (loopDetection.count(hash) == 0) {
+                // add hash to detection
+                loopDetection[hash] = State(rocksDropped, tunnel.highestBlock, clock);
             } else {
-                // coming to rest
-                tunnel.addShape(shape);
-                rocksDropped++;
+                // loop found, advance iteration
+                const State& previous = loopDetection.at(hash);
 
-                // select next shape
-                shape = rocks.at(rockIndex++);
-                shape.lowestBlock = (tunnel.highestBlock + 4);
+                // determine loop size
+                State loop = { rocksDropped - previous.rocksDropped, tunnel.highestBlock - previous.highestBlock, clock - previous.clock };
+                cout << "loop detected with size of : " << loop.rocksDropped << endl;
 
-                // mod shape index to make it circular
-                rockIndex %= rocks.size();
+                // calculate loops to go
+                int64_t loopsToGo = (MAXIMUM_ROUNDS - rocksDropped - 1) / loop.rocksDropped;
 
-                // check for interlude rounds
-                if (rocksDropped == INTERLUDE_ROUNDS) {
-                    // display highest block
-                    cout << "after round #" << INTERLUDE_ROUNDS << ", highest block in tunnel : " << tunnel.highestBlock << endl;
-                }
-            }
+                // advence iteration using the loop
+                rocksDropped += (loopsToGo * loop.rocksDropped);
+                loopedHeight += (loopsToGo * loop.highestBlock);
+                clock += (loopsToGo * loop.clock);
 
-            // increase clock to keep a tally
-            clock++;
-
-            if (rocksDropped < INTERLUDE_ROUNDS) {
-                // skip looping before the interlude
-                 continue;
-            }
-
-            // check for loops
-            if (clock % line.size() == 0) {
-                // assemble a hash string
-                stringstream buffer;
-
-                // assemble hash
-                buffer << shape.leftMostBlock << ":" << (shape.lowestBlock - tunnel.highestBlock) << ":" << rockIndex;
-                for (int64_t block : tunnel.blocks) {
-                    buffer << ":" << (tunnel.highestBlock - block);
-                }
-
-                string hash = buffer.str();
-                // check if this hash already exists
-                if (loopDetection.count(hash) == 0) {
-                    // add hash to detection
-                    loopDetection[hash] = State(rocksDropped, tunnel.highestBlock, clock);
-                } else {
-                    // loop found, advance iteration
-                    const State& previous = loopDetection.at(hash);
-
-                    // determine loop size
-                    State loop = { rocksDropped - previous.rocksDropped, tunnel.highestBlock - previous.highestBlock, clock - previous.clock };
-                    cout << "loop detected with size of : " << loop.rocksDropped << endl;
-
-                    // calculate loops to go
-                    int64_t loopsToGo = (MAXIMUM_ROUNDS - rocksDropped - 1) / loop.rocksDropped;
-
-                    // advence iteration using the loop
-                    rocksDropped += (loopsToGo * loop.rocksDropped);
-                    loopedHeight += (loopsToGo * loop.highestBlock);
-                    clock += (loopsToGo * loop.clock);
-
-                    // clear loop detection cache
-                    loopDetection.clear();
-                }
+                // clear loop detection cache
+                loopDetection.clear();
             }
         }
     }
