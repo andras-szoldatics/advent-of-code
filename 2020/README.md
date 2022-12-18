@@ -1,1 +1,3 @@
-List of the challenges, for the year 2020: \[[link](https://adventofcode.com/2020)\].
+ These are my attempts at solving the Advent of Code challenges of the year 2020.
+ 
+ List of the year's challenges is available here: \[[link](https://adventofcode.com/2020)\].
