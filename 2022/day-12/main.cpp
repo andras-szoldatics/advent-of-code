@@ -1,9 +1,10 @@
 // C++ standard includes
 #include <fstream>
-#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <list>
+#include <vector>
+#include <unordered_map>
 
 using namespace std;
 

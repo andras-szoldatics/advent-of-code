@@ -12,6 +12,8 @@
 
 using namespace std;
 
+typedef function<int64_t(int64_t, int64_t)> Operation;
+
 int64_t addNumber(int64_t original,
                   int64_t number) {
     return (original + number);
@@ -39,7 +41,7 @@ public:
 
     // define operation
     int64_t operationNumber;
-    function<int64_t(int64_t, int64_t)> operation;
+    Operation operation;
 
     // define test attributes
     int64_t testNumber;
