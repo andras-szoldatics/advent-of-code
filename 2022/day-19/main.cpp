@@ -205,7 +205,7 @@ int64_t evaluate(const Blueprint& blueprint,
     State start(original, minutes);
     states.push_front(start);
 
-    // execute BFS iteration
+    // execute DFS iteration
     while (!states.empty()) {
         // retrieve next state
         State previous = states.front();
