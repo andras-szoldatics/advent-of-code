@@ -28,102 +28,118 @@ const Command DEFAULT_COMMAND = [] (Computer&,
         cursor++;
     };
 
-Command createCPY(const string& from,
-                  const string& to) {
-    if (to.length() == 1) {
-        char t = to.front();
-        if ((t >= 'a') && (t <= 'd')) {
-            if (from.length() == 1) {
-                char f = from.front();
-                if ((f >= 'a') && (f <= 'd')) {
-                    return [t, f] (Computer& computer,
+char getRegister(const string& argument) {
+    if (argument.length() == 1) {
+        char reg = argument.front();
+        if ((reg >= 'a') && (reg <= 'd')) {
+            return reg;
+        }
+    }
+
+    return '\0';
+}
+
+Command createCPY(const string& argument1,
+                  const string& argument2) {
+    char regF = getRegister(argument1);
+    char regT = getRegister(argument2);
+
+    if (regT != '\0') {
+        if (regF != '\0') {
+            return [regT, regF] (Computer& computer,
+                                 int64_t& cursor) {
+                       computer.registers[regT] = computer.registers[regF];
+                       cursor++;
+            };
+        } else {
+            int64_t value = stoll(argument1);
+            return [regT, value] (Computer& computer,
+                                  int64_t& cursor) {
+                       computer.registers[regT] = value;
+                       cursor++;
+            };
+        }
+    }
+
+    return DEFAULT_COMMAND;
+}
+
+Command createINC(const string& argument) {
+    char reg = getRegister(argument);
+    if (reg != '\0') {
+        return [reg] (Computer& computer,
+                      int64_t& cursor) {
+                   computer.registers[reg]++;
+                   cursor++;
+        };
+    }
+
+    return DEFAULT_COMMAND;
+}
+
+Command createDEC(const string& argument) {
+    char reg = getRegister(argument);
+    if (reg != '\0') {
+        return [reg] (Computer& computer,
+                      int64_t& cursor) {
+                   computer.registers[reg]--;
+                   cursor++;
+        };
+    }
+
+    return DEFAULT_COMMAND;
+}
+
+Command createJNZ(const string& argument1,
+                  const string& argument2) {
+    char regV = getRegister(argument1);
+    char regO = getRegister(argument2);
+
+    if (regO != '\0') {
+        if (regV != '\0') {
+            return [regV, regO] (Computer& computer,
+                                 int64_t& cursor) {
+                       if (computer.registers[regV] != 0) {
+                           cursor += computer.registers[regO];
+                       } else {
+                           cursor++;
+                       }
+            };
+        } else {
+            int64_t value = stoll(argument1);
+            return [value, regO] (Computer& computer,
+                                  int64_t& cursor) {
+                       if (value != 0) {
+                           cursor += computer.registers[regO];
+                       } else {
+                           cursor++;
+                       }
+            };
+        }
+    } else {
+        int64_t offset = stoll(argument2);
+
+        if (regV != '\0') {
+            return [regV, offset] (Computer& computer,
                                    int64_t& cursor) {
-                               computer.registers[t] = computer.registers[f];
-                               cursor++;
-                    };
-                }
-            }
-
-            // from is not a register
-            int64_t v = stoll(from);
-
-            return [t, v] (Computer& computer,
-                           int64_t& cursor) {
-                       computer.registers[t] = v;
-                       cursor++;
+                       if (computer.registers[regV] != 0) {
+                           cursor += offset;
+                       } else {
+                           cursor++;
+                       }
             };
-        }
-    }
-
-    return DEFAULT_COMMAND;
-}
-
-Command createINC(const string& reg) {
-    if (reg.length() == 1) {
-        char r = reg.front();
-        if ((r >= 'a') && (r <= 'd')) {
-            return [r] (Computer& computer,
-                        int64_t& cursor) {
-                       computer.registers[r]++;
-                       cursor++;
-            };
-        }
-    }
-
-    return DEFAULT_COMMAND;
-}
-
-Command createDEC(const string& reg) {
-    if (reg.length() == 1) {
-        char r = reg.front();
-        if ((r >= 'a') && (r <= 'd')) {
-            return [r] (Computer& computer,
-                        int64_t& cursor) {
-                       computer.registers[r]--;
-                       cursor++;
-            };
-        }
-    }
-
-    return DEFAULT_COMMAND;
-}
-
-Command createJNZ(const string& value,
-                  const string& offset) {
-    // handle edge-cases
-    if ((value == string("0")) &&
-        (offset == string("0"))) {
-        return DEFAULT_COMMAND;
-    }
-
-    // convert offset to integer
-    int64_t delta = stoll(offset);
-
-    if (value.length() == 1) {
-        char r = value.front();
-        if ((r >= 'a') && (r <= 'd')) {
-            return [r, delta] (Computer& computer,
-                               int64_t& cursor) {
-                       if (computer.registers[r] != 0) {
-                           cursor += delta;
+        } else {
+            int64_t value = stoll(argument1);
+            return [value, offset] (Computer&,
+                                    int64_t& cursor) {
+                       if (value != 0) {
+                           cursor += offset;
                        } else {
                            cursor++;
                        }
             };
         }
     }
-
-    // value is not a register
-    int64_t v = stoll(value);
-
-    return [v, delta] (Computer&,
-                       int64_t& cursor) {
-               if (v != 0) {
-                   cursor += delta;
-               } else {
-                   cursor++;
-               }
-    };
 }
 
 void runProgram(Computer& computer,
