@@ -20,14 +20,6 @@ public:
     }
 };
 
-typedef function<void (Computer&, int64_t&)> Command;
-typedef std::vector<Command> Program;
-
-const Command DEFAULT_COMMAND = [] (Computer&,
-                                    int64_t& cursor) {
-        cursor++;
-    };
-
 char getRegister(const string& argument) {
     if (argument.length() == 1) {
         char reg = argument.front();
@@ -39,6 +31,43 @@ char getRegister(const string& argument) {
     return '\0';
 }
 
+class Program;
+
+typedef tuple<string, string, string> Instruction;
+typedef vector<Instruction> Instructions;
+
+typedef function<void (Computer&, Program&)> Command;
+typedef vector<Command> Commands;
+
+class Program {
+public:
+    // instruction storage
+    Instructions instructions;
+    Commands commands;
+
+    // program state
+    int64_t cursor;
+
+    Program() :
+        cursor(0) {}
+
+    // utility functions
+    bool inBounds() const {
+        return (cursor >= 0) && (cursor < static_cast<int64_t>(commands.size()));
+    }
+
+    void doCommand(Computer& computer,
+                   Program& program) {
+        // execute command
+        commands[cursor](computer, program);
+    }
+};
+
+const Command DEFAULT_COMMAND = [] (Computer&,
+                                    Program& program) {
+        program.cursor++;
+    };
+
 Command createCPY(const string& argument1,
                   const string& argument2) {
     char regF = getRegister(argument1);
@@ -47,16 +76,16 @@ Command createCPY(const string& argument1,
     if (regT != '\0') {
         if (regF != '\0') {
             return [regT, regF] (Computer& computer,
-                                 int64_t& cursor) {
+                                 Program& program) {
                        computer.registers[regT] = computer.registers[regF];
-                       cursor++;
+                       program.cursor++;
             };
         } else {
             int64_t value = stoll(argument1);
             return [regT, value] (Computer& computer,
-                                  int64_t& cursor) {
+                                  Program& program) {
                        computer.registers[regT] = value;
-                       cursor++;
+                       program.cursor++;
             };
         }
     }
@@ -68,9 +97,9 @@ Command createINC(const string& argument) {
     char reg = getRegister(argument);
     if (reg != '\0') {
         return [reg] (Computer& computer,
-                      int64_t& cursor) {
+                      Program& program) {
                    computer.registers[reg]++;
-                   cursor++;
+                   program.cursor++;
         };
     }
 
@@ -81,9 +110,9 @@ Command createDEC(const string& argument) {
     char reg = getRegister(argument);
     if (reg != '\0') {
         return [reg] (Computer& computer,
-                      int64_t& cursor) {
+                      Program& program) {
                    computer.registers[reg]--;
-                   cursor++;
+                   program.cursor++;
         };
     }
 
@@ -98,21 +127,21 @@ Command createJNZ(const string& argument1,
     if (regO != '\0') {
         if (regV != '\0') {
             return [regV, regO] (Computer& computer,
-                                 int64_t& cursor) {
+                                 Program& program) {
                        if (computer.registers[regV] != 0) {
-                           cursor += computer.registers[regO];
+                           program.cursor += computer.registers[regO];
                        } else {
-                           cursor++;
+                           program.cursor++;
                        }
             };
         } else {
             int64_t value = stoll(argument1);
             return [value, regO] (Computer& computer,
-                                  int64_t& cursor) {
+                                  Program& program) {
                        if (value != 0) {
-                           cursor += computer.registers[regO];
+                           program.cursor += computer.registers[regO];
                        } else {
-                           cursor++;
+                           program.cursor++;
                        }
             };
         }
@@ -121,21 +150,21 @@ Command createJNZ(const string& argument1,
 
         if (regV != '\0') {
             return [regV, offset] (Computer& computer,
-                                   int64_t& cursor) {
+                                   Program& program) {
                        if (computer.registers[regV] != 0) {
-                           cursor += offset;
+                           program.cursor += offset;
                        } else {
-                           cursor++;
+                           program.cursor++;
                        }
             };
         } else {
             int64_t value = stoll(argument1);
             return [value, offset] (Computer&,
-                                    int64_t& cursor) {
+                                    Program& program) {
                        if (value != 0) {
-                           cursor += offset;
+                           program.cursor += offset;
                        } else {
-                           cursor++;
+                           program.cursor++;
                        }
             };
         }
@@ -143,14 +172,13 @@ Command createJNZ(const string& argument1,
 }
 
 void runProgram(Computer& computer,
-                const Program& program) {
-    // set command position
-    int64_t cursor = 0;
+                Program& program) {
+    // reset cursor
+    program.cursor = 0;
 
-    while ((cursor >= 0) &&
-           (cursor < static_cast<int64_t>(program.size()))) {
+    while (program.inBounds()) {
         // execute command
-        program[cursor](computer, cursor);
+        program.doCommand(computer, program);
     }
 }
 
@@ -179,17 +207,20 @@ int main() {
         getline(buffer, arg1, ' ');
         getline(buffer, arg2, ' ');
 
+        // push instruction
+        program.instructions.push_back(make_tuple(command, arg1, arg2));
+
         // create command
         if (command == "cpy") {
-            program.push_back(createCPY(arg1, arg2));
+            program.commands.push_back(createCPY(arg1, arg2));
         } else if (command == "inc") {
-            program.push_back(createINC(arg1));
+            program.commands.push_back(createINC(arg1));
         } else if (command == "dec") {
-            program.push_back(createDEC(arg1));
+            program.commands.push_back(createDEC(arg1));
         } else if (command == "jnz") {
-            program.push_back(createJNZ(arg1, arg2));
+            program.commands.push_back(createJNZ(arg1, arg2));
         } else {
-            program.push_back(DEFAULT_COMMAND);
+            program.commands.push_back(DEFAULT_COMMAND);
         }
     }
 
