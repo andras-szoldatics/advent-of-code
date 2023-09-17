@@ -13,7 +13,7 @@ Each project provides solutions to both the first & the second part of the day's
 | year | stars |
 |------|------:|
 | 2022 |    50 |
-| 2021 |    27 |
+| 2021 |    29 |
 | 2020 |     2 |
 | 2019 |     2 |
 | 2018 |     2 |
