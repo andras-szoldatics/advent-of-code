@@ -1,3 +1,6 @@
+# cmake / build stuff
 **/build
-
 **/CMakeLists.txt.user
+
+# filter out inputs
+**/input.txt
