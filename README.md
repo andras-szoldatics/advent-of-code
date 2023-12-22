@@ -18,7 +18,7 @@ If you want to test your input, this requires creating an ```input.txt``` file i
 
 | year | stars |
 |------|------:|
-| 2023 |    30 |
+| 2023 |    32 |
 | 2022 |    50 |
 | 2021 |    50 |
 | 2020 |     2 |
