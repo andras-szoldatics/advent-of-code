@@ -16,13 +16,13 @@ typedef vector<VectorD> MatrixD;
 
 class ThreeDee {
 public:
-    double x;
-    double y;
-    double z;
+    EntryD x;
+    EntryD y;
+    EntryD z;
 
-    ThreeDee(double d0,
-             double d1,
-             double d2) :
+    ThreeDee(EntryD d0,
+             EntryD d1,
+             EntryD d2) :
         x(d0),
         y(d1),
         z(d2) {}
@@ -40,12 +40,12 @@ public:
     ThreeDee position;
     ThreeDee velocity;
 
-    HailStone(double p0,
-              double p1,
-              double p2,
-              double v0,
-              double v1,
-              double v2) :
+    HailStone(EntryD p0,
+              EntryD p1,
+              EntryD p2,
+              EntryD v0,
+              EntryD v1,
+              EntryD v2) :
         position(p0, p1, p2),
         velocity(v0, v1, v2) {}
 };
@@ -59,22 +59,22 @@ HailStone parse(const string& line) {
 
     // parse numbers
     getline(buffer, tmp, ',');
-    double p0 = stod(tmp);
+    EntryD p0 = stod(tmp);
 
     getline(buffer, tmp, ',');
-    double p1 = stod(tmp);
+    EntryD p1 = stod(tmp);
 
     getline(buffer, tmp, '@');
-    double p2 = stod(tmp);
+    EntryD p2 = stod(tmp);
 
     getline(buffer, tmp, ',');
-    double v0 = stod(tmp);
+    EntryD v0 = stod(tmp);
 
     getline(buffer, tmp, ',');
-    double v1 = stod(tmp);
+    EntryD v1 = stod(tmp);
 
     getline(buffer, tmp, ',');
-    double v2 = stod(tmp);
+    EntryD v2 = stod(tmp);
 
     // return parsed stone
     return HailStone(p0, p1, p2, v0, v1, v2);
@@ -82,19 +82,19 @@ HailStone parse(const string& line) {
 
 // helper functions
 
-double crossX(const ThreeDee& a,
+EntryD crossX(const ThreeDee& a,
               const ThreeDee& b) {
     return (a.y * b.z) -
            (a.z * b.y);
 }
 
-double crossY(const ThreeDee& a,
+EntryD crossY(const ThreeDee& a,
               const ThreeDee& b) {
     return (a.z * b.x) -
            (a.x * b.z);
 }
 
-double crossZ(const ThreeDee& a,
+EntryD crossZ(const ThreeDee& a,
               const ThreeDee& b) {
     return (a.x * b.y) -
            (a.y * b.x);
@@ -105,7 +105,7 @@ double crossZ(const ThreeDee& a,
 optional<ThreeDee> getTwoDeeIntersection(const HailStone& s1,
                                          const HailStone& s2) {
     // calculate determinant using X and Y components
-    double determinant = (s1.velocity.x * s2.velocity.y) -
+    EntryD determinant = (s1.velocity.x * s2.velocity.y) -
         (s1.velocity.y * s2.velocity.x);
 
     // check if determinant is 0
@@ -114,7 +114,7 @@ optional<ThreeDee> getTwoDeeIntersection(const HailStone& s1,
     }
 
     // calculate time of intersection
-    double t1 = ((s2.position.x - s1.position.x)) * s2.velocity.y -
+    EntryD t1 = ((s2.position.x - s1.position.x)) * s2.velocity.y -
         ((s2.position.y - s1.position.y) * s2.velocity.x);
     t1 /= determinant;
 
@@ -123,7 +123,7 @@ optional<ThreeDee> getTwoDeeIntersection(const HailStone& s1,
     }
 
     // calculate alternate time of intersection
-    double t2 = ((s2.position.x - s1.position.x)) * s1.velocity.y -
+    EntryD t2 = ((s2.position.x - s1.position.x)) * s1.velocity.y -
         ((s2.position.y - s1.position.y) * s1.velocity.x);
     t2 /= determinant;
 
@@ -132,15 +132,15 @@ optional<ThreeDee> getTwoDeeIntersection(const HailStone& s1,
     }
 
     // calculate intersection
-    double x = s1.position.x + s1.velocity.x * t1;
-    double y = s1.position.y + s1.velocity.y * t1;
+    EntryD x = s1.position.x + s1.velocity.x * t1;
+    EntryD y = s1.position.y + s1.velocity.y * t1;
 
     // return intersection
     return ThreeDee(x, y, 0);
 }
 
-const double MIN_VALUE = 200'000'000'000'000;
-const double MAX_VALUE = 400'000'000'000'000;
+const EntryD MIN_VALUE = 200'000'000'000'000;
+const EntryD MAX_VALUE = 400'000'000'000'000;
 
 int64_t countIntersection(const vector<HailStone>& stones) {
     // setup for iteration
