@@ -5,8 +5,7 @@ project(day-21 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(day-21 main.cpp
-    input.txt)
+add_executable(day-21 main.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS day-21
