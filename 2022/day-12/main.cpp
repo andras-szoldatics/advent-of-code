@@ -1,3 +1,4 @@
+#include <array>
 #include <cstdint>
 #include <fstream>
 #include <iomanip>

@@ -1,4 +1,4 @@
-#include <cstdint>
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <unordered_set>

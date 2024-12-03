@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <unordered_map>
 #include <vector>

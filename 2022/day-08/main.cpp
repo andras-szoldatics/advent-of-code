@@ -1,12 +1,7 @@
+#include <array>
 #include <cstdint>
-#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <list>
-#include <memory>
-#include <sstream>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 using namespace std;
