@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef function<uint16_t()> Signal;
+typedef function<uint16_t ()> Signal;
 
 class Wire {
 public:

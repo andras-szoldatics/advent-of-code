@@ -123,7 +123,9 @@ public:
             value = accumulate(values.begin(), values.end(), 0ull);
             break;
         case 1: // product operator
-            value = accumulate(values.begin(), values.end(), 1ull,
+            value = accumulate(values.begin(),
+                               values.end(),
+                               1ull,
                                multiplies<uint64_t>());
             break;
         case 2: // minimum operator

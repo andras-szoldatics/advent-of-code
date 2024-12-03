@@ -115,7 +115,7 @@ public:
                 vector<Lens>& lenses = configuration.at(key);
 
                 // remove lenses with matching label
-                for (vector<Lens>::iterator it = lenses.begin(); it != lenses.end();) {
+                for (vector<Lens>::iterator it = lenses.begin(); it != lenses.end(); ) {
                     if (it->label == lens.label) {
                         it = lenses.erase(it);
                         break;

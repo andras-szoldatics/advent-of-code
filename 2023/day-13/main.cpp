@@ -147,7 +147,7 @@ int main() {
             vector<size_t> newColValue = findSymmetries(patch.cols);
             for (size_t value : newColValue) {
                 if (originalColValue.empty() ||
-                    originalColValue.front() != value) {
+                    (originalColValue.front() != value)) {
                     smudgeValue += value;
                     smudgeFound = true;
                 }
@@ -156,7 +156,7 @@ int main() {
             vector<size_t> newRowValue = findSymmetries(patch.rows);
             for (size_t value : newRowValue) {
                 if (originalRowValue.empty() ||
-                    originalRowValue.front() != value) {
+                    (originalRowValue.front() != value)) {
                     smudgeValue += value * 100;
                     smudgeFound = true;
                 }

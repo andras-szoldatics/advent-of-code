@@ -58,7 +58,6 @@ public:
         return (minimum * median);
     }
 
-
     int64_t getVolume() {
         return (length * width * height);
     }

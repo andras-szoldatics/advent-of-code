@@ -109,7 +109,7 @@ public:
     int64_t direction;
 
     Decoder(const shared_ptr<Shape>& shape,
-                 bool isCubed = false) :
+            bool isCubed = false) :
         dimension(shape),
         secondMoveActive(isCubed),
         position(dimension->start),

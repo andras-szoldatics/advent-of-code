@@ -141,7 +141,7 @@ private:
         return 0;
     }
 
-    void classifyMatches(const vector<size_t>& matches) {        
+    void classifyMatches(const vector<size_t>& matches) {
         // classify matches
         if (matches.empty()) {
             value = CamelPoker::HighCard;

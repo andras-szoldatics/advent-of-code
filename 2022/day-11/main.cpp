@@ -12,7 +12,7 @@
 
 using namespace std;
 
-typedef function<int64_t(int64_t, int64_t)> Operation;
+typedef function<int64_t (int64_t, int64_t)> Operation;
 
 int64_t addNumber(int64_t original,
                   int64_t number) {

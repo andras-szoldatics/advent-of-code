@@ -226,7 +226,7 @@ int main() {
                 cout << "tuning frequency found : " << (foundColumn * 4000000) + foundRow << endl;
 
                 return 0;
-           }
+            }
         }
     }
 

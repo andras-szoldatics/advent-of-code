@@ -69,7 +69,6 @@ public:
         }
     }
 
-
     void extendFuture() {
         // extend future
         extend(true);

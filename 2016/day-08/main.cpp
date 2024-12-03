@@ -18,9 +18,9 @@ public:
            size_t height = SCREEN_HEIGHT) :
         screenWidth(width),
         screenHeight(height) {
-            // set default state
-            pixels = vector<bool>(screenWidth * screenHeight, false);
-        }
+        // set default state
+        pixels = vector<bool>(screenWidth * screenHeight, false);
+    }
 
     // helper functions
     size_t getIndex(size_t row,

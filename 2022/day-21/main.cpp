@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef function<int64_t()> Yell;
+typedef function<int64_t ()> Yell;
 
 class Monkey {
 public:

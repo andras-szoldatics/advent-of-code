@@ -232,7 +232,6 @@ public:
                     }
                 }
 
-
                 // iterate over bricks
                 for (size_t j : thisOneSupports.at(index)) {
                     // add brick to queue

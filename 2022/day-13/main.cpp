@@ -70,7 +70,7 @@ public:
                     }
                 }
 
-                for (const string& tmp : tmps)  {
+                for (const string& tmp : tmps) {
                     // parse packets one-by-one
                     Packet packet(tmp);
                     packets.push_back(packet);
