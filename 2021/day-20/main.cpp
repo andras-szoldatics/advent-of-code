@@ -1,12 +1,11 @@
 #include <array>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <vector>
 
 using namespace std;
-
-// AOC-2021 @ day 20
 
 typedef array<int64_t, 2> Coordinate;
 typedef array<bool, 512> Algorithm;

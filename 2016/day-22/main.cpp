@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -6,8 +7,6 @@
 #include <vector>
 
 using namespace std;
-
-// AOC-2016 @ Day 22
 
 class Node {
 public:

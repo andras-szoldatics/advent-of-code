@@ -1,4 +1,5 @@
 #include <array>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <unordered_map>

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -8,8 +9,6 @@
 #include <vector>
 
 using namespace std;
-
-// Advent of Code - 2021, day 18
 
 class Snailfish;
 typedef shared_ptr<Snailfish> SnailfishPtr;

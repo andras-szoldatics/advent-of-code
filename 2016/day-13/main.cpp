@@ -1,4 +1,5 @@
 #include <bitset>
+#include <cstdint>
 #include <iostream>
 #include <queue>
 #include <unordered_set>

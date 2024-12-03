@@ -1,4 +1,4 @@
-// C++ standard includes
+#include <cstdint>
 #include <cassert>
 #include <fstream>
 #include <iostream>
