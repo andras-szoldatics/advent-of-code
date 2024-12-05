@@ -87,12 +87,10 @@ int64_t countX(const Lookup& lookup,
     char downRight = getChar(lookup, { start.at(0) + 1, start.at(1) + 1 });
 
     // check for different chars crosswise
-    if ((upLeft != downRight) &&
-        (downLeft != upRight) &&
-        ((upLeft == 'M') || (downRight == 'M')) &&
-        ((downLeft == 'M') || (upRight == 'M')) &&
-        ((upLeft == 'S') || (downRight == 'S')) &&
-        ((downLeft == 'S') || (upRight == 'S'))) {
+    if (((upLeft == 'M') != (downRight == 'M')) &&
+        ((downLeft == 'M') != (upRight == 'M')) &&
+        ((upLeft == 'S') != (downRight == 'S')) &&
+        ((downLeft == 'S') != (upRight == 'S'))) {
         total += 1;
     }
 
