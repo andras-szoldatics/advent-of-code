@@ -25,6 +25,7 @@ optional<int64_t> decode(const Expression& expression,
 
         for (size_t i = 0; i < state.size(); i++) {
             int64_t number = expression.numbers.at(i);
+            int64_t factor = 1;
 
             switch (state.at(i)) {
             case 0:
@@ -34,7 +35,12 @@ optional<int64_t> decode(const Expression& expression,
                 result *= number;
                 break;
             case 2:
-                result = stoll(to_string(result) + to_string(number));
+                while (factor <= number) {
+                    factor *= 10;
+                }
+
+                result *= factor;
+                result += number;
                 break;
             default:
                 // NO-OP
