@@ -23,7 +23,7 @@ If you want to test your input, this requires creating an ```input.txt``` file i
 | 2022 |    50 |
 | 2021 |    50 |
 | 2020 |     2 |
-| 2019 |     2 |
+| 2019 |     6 |
 | 2018 |     2 |
 | 2017 |     2 |
 | 2016 |    50 |
